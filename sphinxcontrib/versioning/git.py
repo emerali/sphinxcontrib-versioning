@@ -352,6 +352,7 @@ def clone(local_root, new_root, remote, branch, rel_dest, exclude):
     # Clone.
     try:
         run_command(new_root, ['git', 'clone', remotes[remote][0], '--depth=1', '--branch', branch, '.'])
+        installation_output = run_command(new_root, ['python', 'setup.py', 'install'])
     except CalledProcessError as exc:
         raise GitError('Failed to clone from remote repo URL.', exc.output)
 
@@ -368,6 +369,9 @@ def clone(local_root, new_root, remote, branch, rel_dest, exclude):
             run_command(new_root, ['git', 'remote', 'set-url', '--push', name, push], retry=3)
         except CalledProcessError as exc:
             raise GitError('Failed to set git remote URL.', exc.output)
+
+    package_name = installation_output.split('\n')[-1].split('==')[0].split(' ')[-1]
+    run_command(new_root, ['pip', 'uninstall', '-y', package_name])
 
     # Done if no exclude.
     if not exclude:
