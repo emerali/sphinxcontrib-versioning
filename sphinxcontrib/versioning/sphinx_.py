@@ -2,6 +2,7 @@
 
 import datetime
 import logging
+import subprocess
 import multiprocessing
 import os
 import sys
@@ -204,12 +205,12 @@ def _build(argv, config, versions, current_name, is_root):
         argv += config.overflow
 
 
-    installation_output = run_command(new_root, ['python', 'setup.py', 'install'])
+    installation_output = subprocess.run(['python', 'setup.py', 'install'], stdout=subprocess.PIPE)
     # Build.
     result = build_main(argv)
     package_name = installation_output.split('\n')[-1].split('==')[0].split(' ')[-1]
     print("Uninstalling: " + package_name)
-    run_command(new_root, ['pip', 'uninstall', '-y', package_name])
+    subprocess.run(['pip', 'uninstall', '-y', package_name], stdout=subprocess.PIPE)
     if result != 0:
         raise SphinxError
 
