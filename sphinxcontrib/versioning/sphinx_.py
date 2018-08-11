@@ -203,8 +203,13 @@ def _build(argv, config, versions, current_name, is_root):
     if config.overflow:
         argv += config.overflow
 
+
+    installation_output = run_command(new_root, ['python', 'setup.py', 'install'])
     # Build.
     result = build_main(argv)
+    package_name = installation_output.split('\n')[-1].split('==')[0].split(' ')[-1]
+    print("Uninstalling: " + package_name)
+    run_command(new_root, ['pip', 'uninstall', '-y', package_name])
     if result != 0:
         raise SphinxError
 
