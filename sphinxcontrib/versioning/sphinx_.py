@@ -205,7 +205,7 @@ def _build(argv, config, versions, current_name, is_root):
         argv += config.overflow
 
 
-    installation_output = subprocess.run(['python', 'setup.py', 'install'], stdout=subprocess.PIPE)
+    installation_output = subprocess.run([sys.executable, 'setup.py', 'install'], stdout=subprocess.PIPE)
     # Build.
     result = build_main(argv)
     package_name = installation_output.split('\n')[-1].split('==')[0].split(' ')[-1]
